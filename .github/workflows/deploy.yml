@@ -1,0 +1,33 @@
+
+
+
+
+name: Django to cPanel CI/CD
+
+on:
+  push:
+    branches:
+      - staging # Or your main branch name
+
+jobs:
+  # -----------------------------------------------
+  # Job 1: Deployment to the FIRST cPanel (Primary)
+  # -----------------------------------------------
+  deploy_cpanel1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_DIR }}
+          script: |
+            chmod +x ${{ secrets.FTP_DIR }}/deploy_second.sh
+            ${{ secrets.FTP_DIR }}/deploy_second.sh
+
+  
